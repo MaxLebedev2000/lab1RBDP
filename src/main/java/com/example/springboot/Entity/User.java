@@ -8,9 +8,12 @@ import javax.persistence.Id;
 
 @Data
 @Entity
-public class Category {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String name;
+    private boolean isModerator;
+    private String login;
+    private String password;
+    private int rating;
 }
