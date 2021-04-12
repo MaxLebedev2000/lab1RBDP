@@ -46,4 +46,11 @@ public class UserService {
 
         return usersRepository.save(user);
     }
+
+    public void addModerator(String login) {
+        User user = usersRepository.findByLogin(login)
+                .orElseThrow(() -> new EntityNotFoundException(String.valueOf(login)));
+        user.setModerator(true);
+        usersRepository.save(user);
+    }
 }

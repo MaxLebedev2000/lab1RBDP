@@ -33,10 +33,13 @@ public class ArticleService {
         User user = userService.getByLogin(login);
         Article article = new Article();
         article.setAuthor(user);
-        article.setCategory(articleDTO.category);
-        Category category = categoryRepository.findByName(articleDTO.category.getName())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Категория не найдена"));
+        article.setText(articleDTO.text);
+        article.setName(articleDTO.name);
+        article.setStatus(articleDTO.status);
+        Category category = categoryRepository.findByName(articleDTO.category).
+                orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Категория не найдена"));;
 
+        article.setCategory(category);
         return articleRepository.save(article);
     }
 }

@@ -1,7 +1,6 @@
 package com.example.springboot.Entity;
 
 import lombok.Data;
-
 import javax.persistence.*;
 
 @Data

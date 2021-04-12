@@ -1,6 +1,5 @@
 package com.example.springboot.DTO;
 
-import com.example.springboot.Entity.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -10,6 +9,6 @@ public class ArticleDTO {
     public String name;
     public String text;
     public int author;
-    public Category category;
+    public String category;
     public boolean status;
 }
