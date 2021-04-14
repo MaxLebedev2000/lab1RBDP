@@ -1,16 +1,14 @@
 package com.example.springboot.Repository;
 
-import com.example.springboot.Entity.User;
+import com.example.springboot.Entity.Users;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
-
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository extends CrudRepository<User, Long> {
-    Optional<User> findByLogin(String username);
+public interface UserRepository extends CrudRepository<Users, Long> {
+    Optional<Users> findByLogin(String username);
 
-    @Query("select u from User u where u.isModerator = true")
-    List<User> findByRole();
+    @Query("select u from Users u where u.isModerator = true")
+    List<Users> findByRole();
 }

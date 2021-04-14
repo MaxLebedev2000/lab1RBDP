@@ -14,7 +14,7 @@ public class Article {
     private boolean status;
 
     @ManyToOne
-    private User author;
+    private Users author;
     @ManyToOne
     private Category category;
 }

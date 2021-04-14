@@ -1,10 +1,9 @@
 package com.example.springboot.Service;
 
 import com.example.springboot.DTO.UserDTO;
-import com.example.springboot.Entity.User;
+import com.example.springboot.Entity.Users;
 import com.example.springboot.Repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -13,44 +12,47 @@ import java.util.List;
 @AllArgsConstructor
 public class UserService {
     private final UserRepository usersRepository;
-    private final PasswordEncoder passwordEncoder;
 
-    public User getById(int id) {
+    public Users getById(int id) {
         return usersRepository.findById((long) id)
                 .orElseThrow(() -> new EntityNotFoundException(String.valueOf(id)));
     }
 
-    public User getByLogin(String login) {
+    public Users getByLogin(String login) {
         return usersRepository.findByLogin(login)
                 .orElseThrow(() -> new EntityNotFoundException(String.valueOf(login)));
     }
 
-    public List<User> getModerators() {
+    public List<Users> getModerators() {
         return usersRepository.findByRole();
     }
 
-    public User newUser(UserDTO userDTO) {
-        User user = new User();
+    public Users newUser(UserDTO userDTO) {
+        Users user = new Users();
         user.setLogin(userDTO.login);
-        user.setPassword(passwordEncoder.encode(userDTO.password));
+        user.setPassword(userDTO.password);
         user.setModerator(false);
 
         return usersRepository.save(user);
     }
 
-    public User newModerator(UserDTO userDTO) {
-        User user = new User();
+    public Users newModerator (UserDTO userDTO) {
+        Users user = new Users();
         user.setLogin(userDTO.login);
-        user.setPassword(passwordEncoder.encode(userDTO.password));
+        user.setPassword(userDTO.password);
         user.setModerator(true);
 
         return usersRepository.save(user);
     }
 
     public void addModerator(String login) {
-        User user = usersRepository.findByLogin(login)
+        Users user = usersRepository.findByLogin(login)
                 .orElseThrow(() -> new EntityNotFoundException(String.valueOf(login)));
         user.setModerator(true);
         usersRepository.save(user);
+    }
+
+    public void changeRating (int a, Users user) {
+        user.setRating(user.getRating() + a);
     }
 }

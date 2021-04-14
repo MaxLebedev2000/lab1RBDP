@@ -3,7 +3,7 @@ package com.example.springboot.Service;
 import com.example.springboot.DTO.ArticleDTO;
 import com.example.springboot.Entity.Article;
 import com.example.springboot.Entity.Category;
-import com.example.springboot.Entity.User;
+import com.example.springboot.Entity.Users;
 import com.example.springboot.Repository.ArticleRepository;
 import com.example.springboot.Repository.CategoryRepository;
 import lombok.AllArgsConstructor;
@@ -30,7 +30,7 @@ public class ArticleService {
     }
 
     public Article newArticle (ArticleDTO articleDTO, String login) {
-        User user = userService.getByLogin(login);
+        Users user = userService.getByLogin(login);
         Article article = new Article();
         article.setAuthor(user);
         article.setText(articleDTO.text);

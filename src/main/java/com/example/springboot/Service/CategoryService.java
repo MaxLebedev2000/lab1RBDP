@@ -1,9 +1,7 @@
 package com.example.springboot.Service;
 
 import com.example.springboot.DTO.CategoryDTO;
-import com.example.springboot.DTO.UserDTO;
 import com.example.springboot.Entity.Category;
-import com.example.springboot.Entity.User;
 import com.example.springboot.Repository.CategoryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package com.example.springboot.Controller;
 
 import com.example.springboot.DTO.UserDTO;
-import com.example.springboot.Entity.User;
+import com.example.springboot.Entity.Users;
 import com.example.springboot.Service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,19 +19,19 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ApiOperation("Получить пользователя по id")
-    public User getUserById(@PathVariable int id) {
+    public Users getUserById(@PathVariable int id) {
         return userService.getById(id);
     }
 
     @PostMapping
     @ApiOperation("Создать пользователя")
-    public User newUser(@RequestBody UserDTO userDTO) {
+    public Users newUser(@RequestBody UserDTO userDTO) {
         return userService.newUser(userDTO);
     }
 
     @GetMapping("/moderators")
     @ApiOperation("Получить список модераторов")
-    public List<User> getModerators() {
+    public List<Users> getModerators() {
         return userService.getModerators();
     }
 
