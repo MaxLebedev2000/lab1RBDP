@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -39,5 +40,9 @@ public class CategoryService {
 
     public void deleteCategory(Category category) {
         categoryRepository.delete(category);
+    }
+
+    public List<Category> getCategories() {
+        return categoryRepository.findAllCategories();
     }
 }
