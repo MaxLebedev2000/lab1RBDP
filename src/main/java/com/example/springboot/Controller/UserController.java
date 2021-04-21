@@ -23,6 +23,12 @@ public class UserController {
         return userService.getById(id);
     }
 
+    @GetMapping("/users")
+    @ApiOperation("Получить всех пользователей")
+    public List<Users> getUsers() {
+        return userService.getUsers();
+    }
+
     @PostMapping
     @ApiOperation("Создать пользователя")
     public Users newUser(@RequestBody UserDTO userDTO) {

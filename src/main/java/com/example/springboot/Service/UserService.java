@@ -13,6 +13,10 @@ import java.util.List;
 public class UserService {
     private final UserRepository usersRepository;
 
+    public List<Users> getUsers () {
+        return usersRepository.findAllUsers();
+    }
+
     public Users getById(int id) {
         return usersRepository.findById((long) id)
                 .orElseThrow(() -> new EntityNotFoundException(String.valueOf(id)));
