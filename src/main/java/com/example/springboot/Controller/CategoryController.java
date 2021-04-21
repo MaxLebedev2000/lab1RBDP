@@ -1,20 +1,26 @@
 package com.example.springboot.Controller;
 
+import com.example.springboot.DTO.CategoryDTO;
+import com.example.springboot.Entity.Article;
+import com.example.springboot.Entity.Category;
 import com.example.springboot.Service.CategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/comments")
+@RequestMapping("/api/categories")
 @AllArgsConstructor
-@Api(tags = {"comments"}, description = "Управление категориями")
+@Api(tags = {"categories"}, description = "Управление категориями")
 public class CategoryController {
     private final CategoryService categoryService;
+
+    @GetMapping()
+    @ApiOperation("Создать новую категорию")
+    public Category newCategory (CategoryDTO categoryDTO){
+        return categoryService.newCategory(categoryDTO);
+    }
 
     @DeleteMapping("/{id}")
     @ApiOperation("Удалить категорию")

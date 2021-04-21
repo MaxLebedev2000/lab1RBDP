@@ -1,6 +1,7 @@
 package com.example.springboot.Service;
 
 import com.example.springboot.DTO.UserDTO;
+import com.example.springboot.Entity.Category;
 import com.example.springboot.Entity.Users;
 import com.example.springboot.Repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -58,5 +59,16 @@ public class UserService {
 
     public void changeRating (int a, Users user) {
         user.setRating(user.getRating() + a);
+    }
+
+    public void deleteUser(int id) {
+        Users user = usersRepository.findById((long) id)
+                .orElseThrow(() -> new EntityNotFoundException(String.valueOf(id)));
+
+        deleteUser(user);
+    }
+
+    public void deleteUser(Users user) {
+        usersRepository.delete(user);
     }
 }

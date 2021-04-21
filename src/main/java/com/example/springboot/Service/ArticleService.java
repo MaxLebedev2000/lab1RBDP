@@ -29,17 +29,30 @@ public class ArticleService {
                 .orElseThrow(() -> new EntityNotFoundException(String.valueOf(id)));
     }
 
-    public Article newArticle (ArticleDTO articleDTO, String login) {
-        Users user = userService.getByLogin(login);
+    public Article newArticle (ArticleDTO articleDTO) throws ResponseStatusException {
+        Users user = userService.getById(articleDTO.author);
+
+        if (!isCorrect(articleDTO.text)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "В статье присутствуют запрещенные слова");
+
         Article article = new Article();
         article.setAuthor(user);
         article.setText(articleDTO.text);
         article.setName(articleDTO.name);
         article.setStatus(articleDTO.status);
-        Category category = categoryRepository.findByName(articleDTO.category).
+        Category category = categoryRepository.findById(articleDTO.category).
                 orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Категория не найдена"));;
 
         article.setCategory(category);
         return articleRepository.save(article);
+    }
+
+    public boolean isCorrect(String text) {
+        int count = -1;
+        String[] words = {"GunDone", "ChopIsDish", "YourBunnyWrote", "PeaceDeath"};
+        for (String word : words) {
+            int indexWord = text.indexOf(word);
+            if (indexWord != -1) count++;
+        }
+        return count == -1;
     }
 }

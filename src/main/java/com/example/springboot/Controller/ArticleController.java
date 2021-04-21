@@ -2,22 +2,25 @@ package com.example.springboot.Controller;
 
 import com.example.springboot.DTO.ArticleDTO;
 import com.example.springboot.Entity.Article;
+import com.example.springboot.Repository.UserRepository;
 import com.example.springboot.Service.ArticleService;
+import com.example.springboot.Service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("/api/articles")
 @AllArgsConstructor
-@Api(tags = {"posts"}, description = "Управление статьями")
+@Api(tags = {"articles"}, description = "Управление статьями")
 public class ArticleController {
     private final ArticleService articleService;
+    private final UserService userService;
 
-    public Article getArticle (long id){
+    @GetMapping("{id}")
+    @ApiOperation("Найти статью по id")
+    public Article getArticle (@PathVariable long id){
         return articleService.getArticleById(id);
     }
 
@@ -27,15 +30,11 @@ public class ArticleController {
         return articleService.getAllArticles();
     }
 
-    @PostMapping("/{id}/text/name")
+    @GetMapping("{name}/{text}/{login}}")
     @ApiOperation("Создать новую статью")
-    public Article newArticle(@RequestBody ArticleDTO articleDTO, Principal principal) {
-        return articleService.newArticle(articleDTO, principal.getName());
-    }
-
-    @GetMapping("/{id}")
-    @ApiOperation("Получить статью по id")
-    public Article getArticle(@PathVariable int id) {
-        return articleService.getArticleById(id);
+    public Article newArticle(@PathVariable String name, @PathVariable String text, @PathVariable String login) {
+        long author = userService.getByLogin(login).getId();
+        ArticleDTO articleDTO = new ArticleDTO(name, text, (int) author, 5, false);
+        return articleService.newArticle(articleDTO);
     }
 }

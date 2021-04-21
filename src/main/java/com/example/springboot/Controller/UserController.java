@@ -7,7 +7,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -23,13 +22,25 @@ public class UserController {
         return userService.getById(id);
     }
 
-    @GetMapping("/users")
+    @DeleteMapping("/{id}")
+    @ApiOperation("Удалить пользователя")
+    public void deleteUser(@PathVariable int id) {
+        userService.deleteUser(id);
+    }
+
+    @GetMapping("/{login}")
+    @ApiOperation("Получить пользователя по логину")
+    public Users getUserByLogin(@RequestParam(value = "login") String login) {
+        return userService.getByLogin(login);
+    }
+
+    @GetMapping()
     @ApiOperation("Получить всех пользователей")
-    public List<Users> getUsers() {
+    public List<Users> getAllUsers() {
         return userService.getUsers();
     }
 
-    @PostMapping
+    @PostMapping()
     @ApiOperation("Создать пользователя")
     public Users newUser(@RequestBody UserDTO userDTO) {
         return userService.newUser(userDTO);

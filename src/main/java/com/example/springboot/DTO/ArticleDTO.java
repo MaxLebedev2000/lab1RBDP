@@ -9,6 +9,6 @@ public class ArticleDTO {
     public String name;
     public String text;
     public int author;
-    public String category;
+    public int category;
     public boolean status;
 }
