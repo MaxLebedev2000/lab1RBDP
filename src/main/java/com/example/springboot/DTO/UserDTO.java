@@ -1,5 +1,6 @@
 package com.example.springboot.DTO;
 
+import com.example.springboot.Entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -8,6 +9,6 @@ import lombok.Data;
 public class UserDTO {
     public String login;
     public String password;
-    public int rating;
-    public boolean isModerator;
+//    public int rating;
+//    public Role role;
 }

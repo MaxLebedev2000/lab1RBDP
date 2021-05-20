@@ -4,5 +4,10 @@
       "name": "datasource",
       "type": "java.lang.String",
       "description": "Description for datasource."
-  }
-] }
+    },
+    {
+      "name": "jwt.expiration",
+      "type": "java.lang.String",
+      "description": "Description for jwt.expiration."
+    }
+  ] }

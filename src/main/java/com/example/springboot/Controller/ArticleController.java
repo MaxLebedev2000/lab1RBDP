@@ -3,6 +3,7 @@ package com.example.springboot.Controller;
 import com.example.springboot.DTO.ArticleDTO;
 import com.example.springboot.DTO.MessageDTO;
 import com.example.springboot.Entity.Article;
+import com.example.springboot.Entity.Role;
 import com.example.springboot.Entity.Users;
 import com.example.springboot.Service.ArticleService;
 import com.example.springboot.Service.CategoryService;
@@ -11,6 +12,7 @@ import com.example.springboot.Service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -57,6 +59,7 @@ public class ArticleController {
         return articleService.getAllPostedArticles();
     }
 
+    @SneakyThrows
     @GetMapping("/{id}/{mod}/{category}/{rating}")
     @ApiOperation("Одобрить статью")
     public void setStatus(@PathVariable int id, @PathVariable int mod, @PathVariable int category,
@@ -64,7 +67,7 @@ public class ArticleController {
         Users author = getArticle(id).getAuthor();
         Users moderator = userService.getById(mod);
 
-        if (userService.getById(mod).isModerator()) {
+        if (userService.getById(mod).getRole().equals(Role.MODERATOR)) {
             userService.changeRating(rating, author);
             messageService.newMessage(new MessageDTO("Уважаемый, " + author.getLogin() + "! Ваша статья" +
                     getArticle(id).getName() + "была одобрена модератором.", author.getId()), author.getLogin());
@@ -76,14 +79,12 @@ public class ArticleController {
         }
     }
 
-
-
     @GetMapping("/{id}/{mod}")
     @ApiOperation("Удалить статью")
     public void deleteArticle(@PathVariable int id, @PathVariable int mod) {
 
         Users moderator = userService.getById(mod);
-        if (userService.getById(mod).isModerator()) {
+        if (userService.getById(mod).getRole().equals(Role.MODERATOR)) {
             articleService.deleteArticle(id);
             messageService.newMessage(new MessageDTO("Уважаемый, " + moderator.getLogin() + "! Статья" +
                     getArticle(id).getName() + "была успешно удалена .", moderator.getId()), moderator.getLogin());

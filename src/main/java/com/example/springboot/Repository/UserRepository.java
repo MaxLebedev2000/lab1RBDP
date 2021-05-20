@@ -15,6 +15,6 @@ public interface UserRepository extends CrudRepository<Users, Long> {
     @Query("select u from Users u where u.login = :username")
     Optional<Users> findByLogin (@Param("username") String username);
 
-    @Query("select u from Users u where u.isModerator = true")
+    @Query("select u from Users u where u.role = 'MODERATOR'")
     List<Users> findByRole();
 }

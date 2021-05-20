@@ -2,40 +2,77 @@ package com.example.springboot.Service;
 
 import com.example.springboot.DTO.CategoryDTO;
 import com.example.springboot.Entity.Category;
+import com.example.springboot.Entity.Message;
 import com.example.springboot.Repository.CategoryRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+    private final UserTransaction userTransaction;
 
+    @PreAuthorize("hasAuthority('users:write')")
     public Category getById(int id) {
         return categoryRepository.findById((long) id)
                 .orElseThrow(() -> new EntityNotFoundException(String.valueOf(id)));
     }
 
+    @PreAuthorize("hasAuthority('users:write')")
     public Category getByName (String name) {
         return categoryRepository.findByName(name)
                 .orElseThrow(() -> new EntityNotFoundException(String.valueOf(name)));
     }
 
+    @PreAuthorize("hasAuthority('users:write')")
     public Category newCategory (CategoryDTO categoryDTO) {
-        Category category = new Category();
-        category.setName(categoryDTO.name);
+        try {
+            userTransaction.begin();
+            Category category = new Category();
+            category.setName(categoryDTO.name);
+            category = categoryRepository.save(category);
+            userTransaction.commit();
+            return category;
 
-        return categoryRepository.save(category);
+        } catch (Exception e) {
+            try {
+                userTransaction.rollback();
+            } catch (SystemException systemException) {
+                systemException.printStackTrace();
+            }
+            throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT, "При выполнении транзакции возникла ошибка");
+        }
+
     }
 
+    @PreAuthorize("hasAuthority('users:write')")
     public void deleteCategory (int id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(String.valueOf(id)));
+        try {
+            userTransaction.begin();
+            Message message = new Message();
+            Category category = categoryRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(String.valueOf(id)));
 
-        deleteCategory(category);
+            deleteCategory(category);
+            userTransaction.commit();
+        } catch (Exception e) {
+            try {
+                userTransaction.rollback();
+            } catch (SystemException systemException) {
+                systemException.printStackTrace();
+            }
+            throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT, "При выполнении транзакции возникла ошибка");
+        }
+
     }
 
     public void deleteCategory(Category category) {

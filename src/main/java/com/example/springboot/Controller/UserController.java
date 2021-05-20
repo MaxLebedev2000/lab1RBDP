@@ -16,12 +16,6 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("/{id}")
-    @ApiOperation("Получить пользователя по id")
-    public Users getUserById(@PathVariable int id) {
-        return userService.getById(id);
-    }
-
     @DeleteMapping("/{id}")
     @ApiOperation("Удалить пользователя")
     public void deleteUser(@PathVariable int id) {
@@ -29,9 +23,13 @@ public class UserController {
     }
 
     @GetMapping("/{login}")
-    @ApiOperation("Получить пользователя по логину")
-    public Users getUserByLogin(@RequestParam(value = "login") String login) {
-        return userService.getByLogin(login);
+    @ApiOperation("Получить пользователя по логину или id")
+    public Users getUserByLoginOrId(@PathVariable String login) {
+        try {
+            return userService.getById(Integer.parseInt(login));
+        } catch (NumberFormatException e) {
+            return userService.getByLogin(login);
+        }
     }
 
     @GetMapping()
@@ -40,7 +38,7 @@ public class UserController {
         return userService.getUsers();
     }
 
-    @PostMapping()
+    @PostMapping("/new")
     @ApiOperation("Создать пользователя")
     public Users newUser(@RequestBody UserDTO userDTO) {
         return userService.newUser(userDTO);

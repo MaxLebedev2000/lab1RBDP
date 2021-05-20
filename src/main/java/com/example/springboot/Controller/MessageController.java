@@ -35,13 +35,13 @@ public class MessageController {
         return messageService.getMessages();
     }
 
-    @GetMapping("/{login}")
+    @GetMapping("/find/{login}")
     @ApiOperation("Получить сообщения по пользователю, которому они были отправлены")
     public List<Message> getUserByLogin(@RequestParam(value = "login") String login) {
         return messageService.getByLogin(login);
     }
 
-    @PostMapping("/{login}")
+    @PostMapping("/create/{login}")
     @ApiOperation("Создать сообщение")
     public Message newMessage(@PathVariable String login, @RequestBody MessageDTO messageDTO) {
         return messageService.newMessage(messageDTO, login);
