@@ -1,6 +1,6 @@
 package com.example.springboot.security;
 
-import com.example.springboot.Entity.Users;
+import com.example.springboot.entity.Users;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

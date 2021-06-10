@@ -1,6 +1,5 @@
 package com.example.springboot.DTO;
 
-import com.example.springboot.Entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

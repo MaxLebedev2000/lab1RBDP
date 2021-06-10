@@ -1,12 +1,11 @@
 package com.example.springboot.rest;
 
-import com.example.springboot.Entity.Users;
-import com.example.springboot.Repository.UserRepository;
+import com.example.springboot.entity.Users;
+import com.example.springboot.repository.UserRepository;
 import com.example.springboot.security.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
