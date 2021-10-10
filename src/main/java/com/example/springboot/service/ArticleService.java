@@ -6,6 +6,7 @@ import com.example.springboot.entity.Article;
 import com.example.springboot.entity.Category;
 import com.example.springboot.entity.Message;
 import com.example.springboot.entity.Users;
+import com.example.springboot.mappers.ArticleMapper;
 import com.example.springboot.repository.ArticleRepository;
 import com.example.springboot.repository.CategoryRepository;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,7 @@ public class ArticleService {
     private final MessageService messageService;
     private final UserTransaction userTransaction;
     private final MessageProducer messageProducer;
+    private final ArticleMapper articleMapper;
 
     @PreAuthorize("hasAuthority('users:write')")
     public Iterable<Article> getAllArticles() {
@@ -52,39 +54,36 @@ public class ArticleService {
     }
 
     @PreAuthorize("hasAuthority('users:read')")
-    public Article newArticle (ArticleDTO articleDTO) throws ResponseStatusException, JMSException {
+    public Article newArticle(ArticleDTO articleDTO) throws ResponseStatusException, JMSException {
 
-            Users user = userService.getById(articleDTO.author);
-            MessageDTO messageDTO;
+        Users user = userService.getById(articleDTO.author);
+        MessageDTO messageDTO;
 
-            if (!isCorrect(articleDTO.text)) {
-                messageDTO = new MessageDTO("Уважаемый, " + user.getLogin() + ". Ваша статья " + articleDTO.name + "содержит запрещенные слова", user.getId());
-                messageService.newMessage(messageDTO,user.getLogin());
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "В статье присутствуют запрещенные слова");
-            }
+        if (!isCorrect(articleDTO.text)) {
+            messageDTO = new MessageDTO("Уважаемый, " + user.getLogin() + ". Ваша статья " + articleDTO.name + "содержит запрещенные слова", user.getId());
+            messageService.newMessage(messageDTO, user.getLogin());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "В статье присутствуют запрещенные слова");
+        }
 
-            Article article = new Article();
-            article.setAuthor(user);
-            article.setText(articleDTO.text);
-            article.setName(articleDTO.name);
-            article.setStatus(articleDTO.status);
-            Category category = categoryRepository.findById(articleDTO.category).
-                    orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Категория не найдена"));;
+        Article article = articleMapper.dtoToEntity(articleDTO, user);
 
-            article.setCategory(category);
+        Category category = categoryRepository.findById(articleDTO.category).
+                orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Категория не найдена"));
+        ;
 
-            messageDTO = new MessageDTO("Уважаемый, " + user.getLogin() + ".Ваша статья " + articleDTO.name + "прошла проверку. Ожидайте дальнейших действий модераторов", user.getId());
-            messageService.newMessage(messageDTO,user.getLogin());
-            article = articleRepository.save(article);
-            messageProducer.produceMessage(articleDTO);
+        article.setCategory(category);
+
+        messageDTO = new MessageDTO("Уважаемый, " + user.getLogin() + ".Ваша статья " + articleDTO.name + "прошла проверку. Ожидайте дальнейших действий модераторов", user.getId());
+        messageService.newMessage(messageDTO, user.getLogin());
+        article = articleRepository.save(article);
+        messageProducer.produceMessage(articleDTO);
 
 
-
-            return article;
+        return article;
 
 
     }
-
+    //checking the text for forbidden words
     public boolean isCorrect(String text) {
         int count = -1;
         String[] words = {"GunDone", "ChopIsDish", "YourBunnyWrote", "PeaceDeath"};
@@ -121,16 +120,14 @@ public class ArticleService {
         articleRepository.delete(article);
     }
 
+    //changing article data
+    public Article updateArticle(ArticleDTO articleDTO) {
 
-    public Article updateArticle(ArticleDTO articleDTO, int authorId) {
-        Users user = userService.getById(authorId);
+        Users user = userService.getById(articleDTO.author);
 
-        Article article = new Article();
-        article.setAuthor(user);
-        article.setText(articleDTO.text);
-        article.setName(articleDTO.name);
-        article.setStatus(articleDTO.status);
+        Article article = articleMapper.dtoToEntity(articleDTO, user);
         articleRepository.updateArticle(article);
+
         return article;
     }
 }
